@@ -1,0 +1,1 @@
+TELEPRESENCE_BINARY = "./telepresence"
