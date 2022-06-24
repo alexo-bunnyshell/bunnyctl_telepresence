@@ -79,7 +79,7 @@ class Bunnydev(object):
     return False
 
 
-    os.system("kubectl cluste_info ")
+    os.system("kubectl cluste-info ")
 
   def telepresence_connect(self):
     os.system("./telepresence connect")
