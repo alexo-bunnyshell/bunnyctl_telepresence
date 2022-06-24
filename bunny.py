@@ -111,7 +111,7 @@ class Bunnydev(object):
     servicePort=service_json['spec']['ports'][0]['port']
 
     print(f'{constants.TELEPRESENCE_BINARY} intercept {self._component} --port {servicePort}:{servicePort} --namespace  {self._environment} -w {self._component} --env-file {env_file_name}')
-    print(f'docker-run --rm  {self._docker_args} -e {env_file_name} -p{servicePort}:{podPort} {self._docker}')
+    print(f'docker run --rm  {self._docker_args} -e {env_file_name} -p{servicePort}:{podPort} {self._docker}')
 
 
 
