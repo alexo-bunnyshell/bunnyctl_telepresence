@@ -1,3 +1,4 @@
+import re
 import fire
 import shutil
 import os
@@ -27,12 +28,13 @@ class Bunnydev(object):
 
   # def run(self, environment, component, docker, container=None, *docker_args, **kwargs):
   # def run(self, environment, component, docker, container=None, **kwargs):
-  def intercept(self, environment, component, docker, container=None, *docker_args):
+  def intercept(self, environment, component, docker, container=None, dryrun=False, *docker_args):
     self._environment = environment
     self._component = component
     self._container = container
     self._docker = docker
     self._docker_args = ""
+    self._dryrun = dryrun
     # self._docker_args = docker_args
 
     print(f'docker_args: {docker_args}')
@@ -102,7 +104,7 @@ class Bunnydev(object):
     # os.system(kube_service_command)
 
     output=os.popen(kube_service_command).read()
-    print (output)
+    # print (output)
     service_json = json.loads(output)
     
     print(service_json['spec']['ports'][0])
@@ -110,10 +112,25 @@ class Bunnydev(object):
     podPort=service_json['spec']['ports'][0]['targetPort']
     servicePort=service_json['spec']['ports'][0]['port']
 
-    print(f'{constants.TELEPRESENCE_BINARY} intercept {self._component} --port {servicePort}:{servicePort} --namespace  {self._environment} -w {self._component} --env-file {env_file_name}')
-    print(f'docker run --rm  {self._docker_args} -e {env_file_name} -p{servicePort}:{podPort} {self._docker}')
+    telepresence_command = f'{constants.TELEPRESENCE_BINARY} intercept {self._component} --port {servicePort}:{servicePort} --namespace  {self._environment} -w {self._component} --env-file {env_file_name}'
+    docker_command = f'docker run --init --rm  {self._docker_args} -e {env_file_name} -p{servicePort}:{podPort} {self._docker}'
 
+    #print(f'{constants.TELEPRESENCE_BINARY} intercept {self._component} --port {servicePort}:{servicePort} --namespace  {self._environment} -w {self._component} --env-file {env_file_name}')
+    #print(f'docker run --rm  {self._docker_args} -e {env_file_name} -p{servicePort}:{podPort} {self._docker}')
 
+    # print(self._dryrun)
+    # exit
+
+    if self._dryrun:
+      print(telepresence_command)
+      print(docker_command)
+      return
+    
+    print("RUNNING")
+    #return
+    os.system(telepresence_command)
+    os.system(docker_command)
+    
 
     # k describe service result
     # telepresence intercept result --service result -n env-6mrtz3 --port 5001:5001 -w result --env-file intercept-result.env

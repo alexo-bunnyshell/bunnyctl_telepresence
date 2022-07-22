@@ -1,4 +1,5 @@
 __pycache__
+.py_env
 bin/
 telepresence
 intercept_env-6mrtz3_result.env

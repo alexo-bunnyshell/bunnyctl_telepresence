@@ -1,1 +1,1 @@
-TELEPRESENCE_BINARY = "./telepresence"
+TELEPRESENCE_BINARY = "telepresence"
